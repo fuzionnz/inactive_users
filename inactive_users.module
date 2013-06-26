@@ -5,3 +5,52 @@
  */
 
 include_once 'inactive_users.features.inc';
+
+/**
+ * Implements hook_user_delete().
+ */
+function inactive_users_user_delete($account) {
+  _inactive_users_remove_contact($account);
+}
+
+/**
+ * Implements hook_user_cancel().
+ */
+function inactive_users_user_cancel($edit, $account, $method) {
+  switch ($method) {
+    case 'user_cancel_block_unpublish':
+      _inactive_users_remove_contact($account);
+      break;
+  }
+}
+
+/**
+ * Remove associated CiviCRM contact for a Drupal account.
+ *
+ * @TODO Handle CiviCRM API failures properly (CiviCRM hands back an
+ * array which if() won't catch). Use civicrm_api3() & trap
+ * exceptions?
+ */
+function _inactive_users_remove_contact($account) {
+  if (function_exists('civicrm_api')) {
+    module_load_include('php', 'civicrm', 'api/api');
+    $params = array(
+      'uf_id' => $account->uid,
+      'version' => 3,
+    );
+    if ($ufmatch = civicrm_api('UFMatch','Get', $params)) {
+      $ufmatch = reset($ufmatch['values']);
+      $params = array(
+        'id' => $ufmatch['contact_id'],
+        'version' => 3,
+      );
+      if ($contact = civicrm_api('Contact', 'Get', $params)) {
+        $contact = reset($contact['values']);
+        $name = $contact['display_name'];
+        if ($delete = civicrm_api('Contact', 'Delete', $params)) {
+          drupal_set_message(t('Contact %name has been deleted.', array('%name' => $name)));
+        }
+      }
+    }
+  }
+}
