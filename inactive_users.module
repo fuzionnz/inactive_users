@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Inactive Users feature.
+ */
+
+include_once 'inactive_users.features.inc';
