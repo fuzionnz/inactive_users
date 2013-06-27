@@ -10,7 +10,7 @@ include_once 'inactive_users.features.inc';
  * Implements hook_user_delete().
  */
 function inactive_users_user_delete($account) {
-  _inactive_users_remove_contact($account);
+  // _inactive_users_remove_contact($account);
 }
 
 /**
@@ -19,7 +19,7 @@ function inactive_users_user_delete($account) {
 function inactive_users_user_cancel($edit, $account, $method) {
   switch ($method) {
     case 'user_cancel_block_unpublish':
-      _inactive_users_remove_contact($account);
+      // _inactive_users_remove_contact($account);
       break;
   }
 }
@@ -50,6 +50,73 @@ function _inactive_users_remove_contact($account) {
         if ($delete = civicrm_api('Contact', 'Delete', $params)) {
           drupal_set_message(t('Contact %name has been deleted.', array('%name' => $name)));
         }
+      }
+    }
+  }
+}
+
+
+/**
+ * Implements hook_user_delete_form_alter().
+ */
+function inactive_users_form_alter(&$form, &$form_state) {
+
+}
+
+/**
+ *
+ */
+function inactive_users_form_user_cancel_confirm_form_alter(&$form, &$form_state) {
+  if (!isset($form['description']['#weight'])) {
+    $form['description']['#weight'] = 90;
+  }
+  $form['civicrm_delete'] = array(
+    '#tree' => TRUE,
+    '#weight' => 80,
+  );
+  $form['civicrm_delete']['confirm'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Remove associated contact'),
+    '#default_value' => TRUE,
+    '#description' => t('Uncheck if you do not want any associated CiviCRM contacts to be removed.'),
+  );
+  array_unshift($form['#submit'], 'inactive_users_user_cancel_confirm_submit');
+}
+
+
+function inactive_users_user_cancel_confirm_submit($form, &$form_state) {
+  if (!empty($form_state['values']['civicrm_delete']['confirm'])) {
+    drupal_set_message('Attempting contact removal.');
+    civicrm_initialize();
+    if (function_exists('civicrm_api')) {
+      $params = array(
+        'uf_id' => $form_state['values']['uid'],
+        'version' => 3,
+      );
+      $ufmatch = civicrm_api('UFMatch','Get', $params);
+      $ufmatch = reset($ufmatch['values']);
+       if ($ufmatch) {
+        $params = array(
+          'id' => $ufmatch['contact_id'],
+          'version' => 3,
+        );
+        $contact = civicrm_api('Contact', 'Get', $params);
+        $contact = reset($contact['values']);
+         if ($contact) {
+          $name = $contact['display_name'];
+          if ($delete = civicrm_api('Contact', 'Delete', $params)) {
+             drupal_set_message(t('Contact %name has been deleted.', array('%name' => $name)));
+          }
+          else {
+            drupal_set_message(t('Unable to delete contact %name.', array('%name' => $name)), 'error');
+          }
+        }
+        else {
+          drupal_set_message(t('Unable to locate contact %id.', array('%id' => $ufmatch['contact_id'])), 'error');
+        }
+      }
+      else {
+        drupal_set_message(t('No associated CiviCRM contact found for deletion.'));
       }
     }
   }
