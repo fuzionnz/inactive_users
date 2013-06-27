@@ -32,6 +32,103 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'views_bulk_operations' => 'views_bulk_operations',
+    'id' => 'id',
+    'display_name' => 'display_name',
+    'mail' => 'mail',
+    'name' => 'name',
+    'created' => 'created',
+    'access' => 'access',
+    'login' => 'login',
+    'status' => 'status',
+    'rid' => 'rid',
+    'cancel_node' => 'cancel_node',
+    'edit_node' => 'edit_node',
+  );
+  $handler->display->display_options['style_options']['default'] = 'created';
+  $handler->display->display_options['style_options']['info'] = array(
+    'views_bulk_operations' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'id' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'display_name' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'mail' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'name' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'created' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'access' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'login' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'status' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'rid' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'cancel_node' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'edit_node' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Header: Global: Result summary */
+  $handler->display->display_options['header']['result']['id'] = 'result';
+  $handler->display->display_options['header']['result']['table'] = 'views';
+  $handler->display->display_options['header']['result']['field'] = 'result';
   /* Field: Bulk operations: User */
   $handler->display->display_options['fields']['views_bulk_operations']['id'] = 'views_bulk_operations';
   $handler->display->display_options['fields']['views_bulk_operations']['table'] = 'users';
@@ -113,6 +210,12 @@ function inactive_users_views_default_views() {
       'label' => '',
     ),
   );
+  /* Field: CiviCRM Contacts: Contact ID */
+  $handler->display->display_options['fields']['id']['id'] = 'id';
+  $handler->display->display_options['fields']['id']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['id']['field'] = 'id';
+  $handler->display->display_options['fields']['id']['label'] = 'CID';
+  $handler->display->display_options['fields']['id']['separator'] = '';
   /* Field: CiviCRM Contacts: Display Name */
   $handler->display->display_options['fields']['display_name']['id'] = 'display_name';
   $handler->display->display_options['fields']['display_name']['table'] = 'civicrm_contact';
@@ -136,12 +239,6 @@ function inactive_users_views_default_views() {
 [mail]';
   $handler->display->display_options['fields']['name']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['name']['alter']['ellipsis'] = FALSE;
-  /* Field: User: Active */
-  $handler->display->display_options['fields']['status']['id'] = 'status';
-  $handler->display->display_options['fields']['status']['table'] = 'users';
-  $handler->display->display_options['fields']['status']['field'] = 'status';
-  $handler->display->display_options['fields']['status']['type'] = 'unicode-yes-no';
-  $handler->display->display_options['fields']['status']['not'] = 0;
   /* Field: User: Created date */
   $handler->display->display_options['fields']['created']['id'] = 'created';
   $handler->display->display_options['fields']['created']['table'] = 'users';
@@ -162,6 +259,12 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['fields']['login']['field'] = 'login';
   $handler->display->display_options['fields']['login']['date_format'] = 'custom';
   $handler->display->display_options['fields']['login']['custom_date_format'] = 'Y-m-d H:i';
+  /* Field: User: Active */
+  $handler->display->display_options['fields']['status']['id'] = 'status';
+  $handler->display->display_options['fields']['status']['table'] = 'users';
+  $handler->display->display_options['fields']['status']['field'] = 'status';
+  $handler->display->display_options['fields']['status']['type'] = 'unicode-yes-no';
+  $handler->display->display_options['fields']['status']['not'] = 0;
   /* Field: User: Roles */
   $handler->display->display_options['fields']['rid']['id'] = 'rid';
   $handler->display->display_options['fields']['rid']['table'] = 'users_roles';
@@ -189,7 +292,31 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['filters']['status']['field'] = 'status';
   $handler->display->display_options['filters']['status']['value'] = '0';
   $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filters']['status']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['status']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['status']['expose']['label'] = 'Active';
+  $handler->display->display_options['filters']['status']['expose']['operator'] = 'status_op';
+  $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
+  $handler->display->display_options['filters']['status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['status']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['status']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    8 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    15 => 0,
+    9 => 0,
+    10 => 0,
+    11 => 0,
+    12 => 0,
+    13 => 0,
+    14 => 0,
+    16 => 0,
+  );
   /* Filter criterion: User: The user ID */
   $handler->display->display_options['filters']['uid_raw']['id'] = 'uid_raw';
   $handler->display->display_options['filters']['uid_raw']['table'] = 'users';
@@ -201,7 +328,7 @@ function inactive_users_views_default_views() {
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'admin/people/inactive';
   $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Inactive People';
+  $handler->display->display_options['menu']['title'] = 'Inactive Users';
   $handler->display->display_options['menu']['description'] = 'Users who are not active on the site';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'menu-admin-links';
@@ -223,7 +350,10 @@ function inactive_users_views_default_views() {
     t('‹ previous'),
     t('next ›'),
     t('last »'),
+    t('Displaying @start - @end of @total'),
     t('User'),
+    t('CID'),
+    t('.'),
     t('Display Name'),
     t('(no contact name)'),
     t('E-mail'),
@@ -231,10 +361,10 @@ function inactive_users_views_default_views() {
     t('[display_name]<br>
 [name]<br>
 [mail]'),
-    t('Active'),
     t('Created'),
     t('Accessed'),
     t('Last login'),
+    t('Active'),
     t('Roles'),
     t('Cancel'),
     t('Manage'),

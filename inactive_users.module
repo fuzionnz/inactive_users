@@ -32,8 +32,8 @@ function inactive_users_user_cancel($edit, $account, $method) {
  * exceptions?
  */
 function _inactive_users_remove_contact($account) {
+  civicrm_initialize();
   if (function_exists('civicrm_api')) {
-    module_load_include('php', 'civicrm', 'api/api');
     $params = array(
       'uf_id' => $account->uid,
       'version' => 3,
