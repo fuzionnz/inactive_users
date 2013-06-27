@@ -5,13 +5,13 @@ Inactive Users contains features to assist in managing registration and contact 
 
 Initially a view and a couple of hooks to remove associated contacts.
 
-h3. Rationale
+## Rationale
 
 Registration spam pushes the task of managing removals onto site admins. Unless it's possible to prevent rego spam (hint: don't accept registrations!) or to automatically remove all regos (not suited for many sites), we need to do something to make the admin's life better when doing this task.
 
 We work with CiviCRM sites a lot, so initially we're looking at it in relation to CiviCRM contacts and we're connecting the user and contact data accordingly. If your site isn't a CiviCRM site, this module may not be for you (yet).
 
-h3. TODO
+## TODO
 
 * Better filters. I'd like admins to be able to use exposed filters to identify familiar patterns -
  * Users who haven't validated their email.
