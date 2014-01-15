@@ -17,9 +17,16 @@ function inactive_users_user_delete($account) {
  * Implements hook_user_cancel().
  */
 function inactive_users_user_cancel($edit, $account, $method) {
+  // If 'Delete the account and its content' is selected,
+  // inactive_users_user_delete() is called instead.
   switch ($method) {
+    // Disable the account and keep its content.
+    case 'user_cancel_block':
+    // Disable the account and unpublish its content.
     case 'user_cancel_block_unpublish':
-      // _inactive_users_remove_contact($account);
+    // Delete the account and make its content belong to the Anonymous user
+    case 'user_cancel_reassign':
+      _inactive_users_remove_contact($account);
       break;
   }
 }
@@ -33,25 +40,26 @@ function inactive_users_user_cancel($edit, $account, $method) {
  */
 function _inactive_users_remove_contact($account) {
   civicrm_initialize();
-  if (function_exists('civicrm_api')) {
+  $params = array(
+    'uf_id' => $account->uid,
+    'version' => 3,
+  );
+  try {
+    $ufmatch = civicrm_api3('UFMatch','Get', $params);
+    $ufmatch = reset($ufmatch['values']);
     $params = array(
-      'uf_id' => $account->uid,
+      'id' => $ufmatch['contact_id'],
       'version' => 3,
+      // 'skip_undelete' => TRUE,
     );
-    if ($ufmatch = civicrm_api('UFMatch','Get', $params)) {
-      $ufmatch = reset($ufmatch['values']);
-      $params = array(
-        'id' => $ufmatch['contact_id'],
-        'version' => 3,
-      );
-      if ($contact = civicrm_api('Contact', 'Get', $params)) {
-        $contact = reset($contact['values']);
-        $name = $contact['display_name'];
-        if ($delete = civicrm_api('Contact', 'Delete', $params)) {
-          drupal_set_message(t('Contact %name has been deleted.', array('%name' => $name)));
-        }
-      }
-    }
+    $contact = civicrm_api('Contact', 'Get', $params);
+    $contact = reset($contact['values']);
+    $name = $contact['display_name'];
+    $delete = civicrm_api3('Contact', 'Delete', $params);
+    drupal_set_message(t('Contact %name has been deleted.', array('%name' => $name)));
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('Unable to delete contact %name, error was: %message', array('%message' => $e->getMessage(), '%name' => $name)), 'error');
   }
 }
 
