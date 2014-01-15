@@ -138,16 +138,36 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['force_single'] = 0;
   $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['entity_load_capacity'] = '10';
   $handler->display->display_options['fields']['views_bulk_operations']['vbo_operations'] = array(
+    'rules_component::rules_assign_user_to_domain' => array(
+      'selected' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
     'action::user_block_user_action' => array(
       'selected' => 1,
-      'postpone_processing' => 1,
+      'postpone_processing' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'action::views_bulk_operations_user_cancel_action' => array(
+      'selected' => 1,
+      'postpone_processing' => 0,
       'skip_confirmation' => 0,
       'override_label' => 0,
       'label' => '',
     ),
     'action::views_bulk_operations_delete_item' => array(
       'selected' => 1,
-      'postpone_processing' => 1,
+      'postpone_processing' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'action::views_bulk_operations_delete_revision' => array(
+      'selected' => 0,
+      'postpone_processing' => 0,
       'skip_confirmation' => 0,
       'override_label' => 0,
       'label' => '',
@@ -227,16 +247,25 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['fields']['mail']['id'] = 'mail';
   $handler->display->display_options['fields']['mail']['table'] = 'users';
   $handler->display->display_options['fields']['mail']['field'] = 'mail';
+  $handler->display->display_options['fields']['mail']['label'] = 'Drupal Email';
   $handler->display->display_options['fields']['mail']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['mail']['link_to_user'] = '0';
+  /* Field: CiviCRM Email: Email Address */
+  $handler->display->display_options['fields']['email']['id'] = 'email';
+  $handler->display->display_options['fields']['email']['table'] = 'civicrm_email';
+  $handler->display->display_options['fields']['email']['field'] = 'email';
+  $handler->display->display_options['fields']['email']['label'] = 'CiviCRM Email';
+  $handler->display->display_options['fields']['email']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['email']['location_type'] = '0';
+  $handler->display->display_options['fields']['email']['location_op'] = '0';
+  $handler->display->display_options['fields']['email']['is_primary'] = 0;
   /* Field: User: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
   $handler->display->display_options['fields']['name']['table'] = 'users';
   $handler->display->display_options['fields']['name']['field'] = 'name';
   $handler->display->display_options['fields']['name']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['name']['alter']['text'] = '[display_name]<br>
-[name]<br>
-[mail]';
+  $handler->display->display_options['fields']['name']['alter']['text'] = 'CiviCRM: [display_name] &lt;[email]&gt;<br>
+Drupal: [name] &lt;[mail]&gt;<br>
+';
   $handler->display->display_options['fields']['name']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['name']['alter']['ellipsis'] = FALSE;
   /* Field: User: Created date */
@@ -259,12 +288,31 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['fields']['login']['field'] = 'login';
   $handler->display->display_options['fields']['login']['date_format'] = 'custom';
   $handler->display->display_options['fields']['login']['custom_date_format'] = 'Y-m-d H:i';
+  /* Field: User: Has Logged In */
+  $handler->display->display_options['fields']['has_logged_in']['id'] = 'has_logged_in';
+  $handler->display->display_options['fields']['has_logged_in']['table'] = 'users';
+  $handler->display->display_options['fields']['has_logged_in']['field'] = 'has_logged_in';
+  $handler->display->display_options['fields']['has_logged_in']['label'] = 'Logged In';
+  $handler->display->display_options['fields']['has_logged_in']['type'] = 'unicode-yes-no';
+  $handler->display->display_options['fields']['has_logged_in']['not'] = 0;
   /* Field: User: Active */
   $handler->display->display_options['fields']['status']['id'] = 'status';
   $handler->display->display_options['fields']['status']['table'] = 'users';
   $handler->display->display_options['fields']['status']['field'] = 'status';
   $handler->display->display_options['fields']['status']['type'] = 'unicode-yes-no';
   $handler->display->display_options['fields']['status']['not'] = 0;
+  /* Field: CiviCRM Contacts: Contact Exists */
+  $handler->display->display_options['fields']['has_contact']['id'] = 'has_contact';
+  $handler->display->display_options['fields']['has_contact']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['has_contact']['field'] = 'has_contact';
+  $handler->display->display_options['fields']['has_contact']['type'] = 'unicode-yes-no';
+  $handler->display->display_options['fields']['has_contact']['not'] = 0;
+  /* Field: CiviCRM Email: Email Mismatch */
+  $handler->display->display_options['fields']['email_mismatch']['id'] = 'email_mismatch';
+  $handler->display->display_options['fields']['email_mismatch']['table'] = 'civicrm_email';
+  $handler->display->display_options['fields']['email_mismatch']['field'] = 'email_mismatch';
+  $handler->display->display_options['fields']['email_mismatch']['type'] = 'unicode-yes-no';
+  $handler->display->display_options['fields']['email_mismatch']['not'] = 0;
   /* Field: User: Roles */
   $handler->display->display_options['fields']['rid']['id'] = 'rid';
   $handler->display->display_options['fields']['rid']['table'] = 'users_roles';
@@ -286,20 +334,24 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'users';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
-  /* Filter criterion: User: Active */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'users';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = '0';
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['status']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['status']['expose']['label'] = 'Active';
-  $handler->display->display_options['filters']['status']['expose']['operator'] = 'status_op';
-  $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['required'] = TRUE;
-  $handler->display->display_options['filters']['status']['expose']['remember'] = TRUE;
-  $handler->display->display_options['filters']['status']['expose']['remember_roles'] = array(
+  /* Filter criterion: User: The user ID */
+  $handler->display->display_options['filters']['uid_raw']['id'] = 'uid_raw';
+  $handler->display->display_options['filters']['uid_raw']['table'] = 'users';
+  $handler->display->display_options['filters']['uid_raw']['field'] = 'uid_raw';
+  $handler->display->display_options['filters']['uid_raw']['operator'] = '>';
+  $handler->display->display_options['filters']['uid_raw']['value']['value'] = '1';
+  /* Filter criterion: User: Has Logged In */
+  $handler->display->display_options['filters']['has_logged_in']['id'] = 'has_logged_in';
+  $handler->display->display_options['filters']['has_logged_in']['table'] = 'users';
+  $handler->display->display_options['filters']['has_logged_in']['field'] = 'has_logged_in';
+  $handler->display->display_options['filters']['has_logged_in']['value'] = '0';
+  $handler->display->display_options['filters']['has_logged_in']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['has_logged_in']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['has_logged_in']['expose']['label'] = 'Has Logged In';
+  $handler->display->display_options['filters']['has_logged_in']['expose']['description'] = 'Has this account ever logged in?';
+  $handler->display->display_options['filters']['has_logged_in']['expose']['operator'] = 'has_logged_in_op';
+  $handler->display->display_options['filters']['has_logged_in']['expose']['identifier'] = 'has_logged_in';
+  $handler->display->display_options['filters']['has_logged_in']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
     3 => 0,
@@ -317,12 +369,96 @@ function inactive_users_views_default_views() {
     14 => 0,
     16 => 0,
   );
-  /* Filter criterion: User: The user ID */
-  $handler->display->display_options['filters']['uid_raw']['id'] = 'uid_raw';
-  $handler->display->display_options['filters']['uid_raw']['table'] = 'users';
-  $handler->display->display_options['filters']['uid_raw']['field'] = 'uid_raw';
-  $handler->display->display_options['filters']['uid_raw']['operator'] = '>';
-  $handler->display->display_options['filters']['uid_raw']['value']['value'] = '1';
+  /* Filter criterion: User: Is Active */
+  $handler->display->display_options['filters']['is_active']['id'] = 'is_active';
+  $handler->display->display_options['filters']['is_active']['table'] = 'users';
+  $handler->display->display_options['filters']['is_active']['field'] = 'is_active';
+  $handler->display->display_options['filters']['is_active']['value'] = 'All';
+  $handler->display->display_options['filters']['is_active']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['is_active']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['is_active']['expose']['label'] = 'Is Active';
+  $handler->display->display_options['filters']['is_active']['expose']['description'] = 'Is this account active or banned?';
+  $handler->display->display_options['filters']['is_active']['expose']['operator'] = 'is_active_op';
+  $handler->display->display_options['filters']['is_active']['expose']['identifier'] = 'active';
+  $handler->display->display_options['filters']['is_active']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['is_active']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    8 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    15 => 0,
+    9 => 0,
+    10 => 0,
+    11 => 0,
+    12 => 0,
+    13 => 0,
+    14 => 0,
+    16 => 0,
+  );
+  /* Filter criterion: CiviCRM Contacts: Contact Exists */
+  $handler->display->display_options['filters']['has_contact']['id'] = 'has_contact';
+  $handler->display->display_options['filters']['has_contact']['table'] = 'civicrm_contact';
+  $handler->display->display_options['filters']['has_contact']['field'] = 'has_contact';
+  $handler->display->display_options['filters']['has_contact']['value'] = 'All';
+  $handler->display->display_options['filters']['has_contact']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['has_contact']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['has_contact']['expose']['label'] = 'Contact Exists';
+  $handler->display->display_options['filters']['has_contact']['expose']['description'] = 'Does user have CiviCRM contact?';
+  $handler->display->display_options['filters']['has_contact']['expose']['operator'] = 'has_contact_op';
+  $handler->display->display_options['filters']['has_contact']['expose']['identifier'] = 'has_contact';
+  $handler->display->display_options['filters']['has_contact']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['has_contact']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    8 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    15 => 0,
+    9 => 0,
+    10 => 0,
+    11 => 0,
+    12 => 0,
+    13 => 0,
+    14 => 0,
+    16 => 0,
+  );
+  /* Filter criterion: CiviCRM Email: Email Mismatch */
+  $handler->display->display_options['filters']['email_mismatch']['id'] = 'email_mismatch';
+  $handler->display->display_options['filters']['email_mismatch']['table'] = 'civicrm_email';
+  $handler->display->display_options['filters']['email_mismatch']['field'] = 'email_mismatch';
+  $handler->display->display_options['filters']['email_mismatch']['value'] = 'All';
+  $handler->display->display_options['filters']['email_mismatch']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['email_mismatch']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['email_mismatch']['expose']['label'] = 'Email mismatch?';
+  $handler->display->display_options['filters']['email_mismatch']['expose']['description'] = 'Do the Drupal and CiviCRM emails differ?';
+  $handler->display->display_options['filters']['email_mismatch']['expose']['operator'] = 'email_mismatch_op';
+  $handler->display->display_options['filters']['email_mismatch']['expose']['identifier'] = 'email_mismatch';
+  $handler->display->display_options['filters']['email_mismatch']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['email_mismatch']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    8 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    15 => 0,
+    9 => 0,
+    10 => 0,
+    11 => 0,
+    12 => 0,
+    13 => 0,
+    14 => 0,
+    16 => 0,
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -352,23 +488,35 @@ function inactive_users_views_default_views() {
     t('last »'),
     t('Displaying @start - @end of @total'),
     t('User'),
+    t('- Choose an operation -'),
     t('CID'),
     t('.'),
     t('Display Name'),
     t('(no contact name)'),
-    t('E-mail'),
+    t('Drupal Email'),
+    t('CiviCRM Email'),
     t('Name'),
-    t('[display_name]<br>
-[name]<br>
-[mail]'),
+    t('CiviCRM: [display_name] &lt;[email]&gt;<br>
+Drupal: [name] &lt;[mail]&gt;<br>
+'),
     t('Created'),
     t('Accessed'),
     t('Last login'),
+    t('Logged In'),
     t('Active'),
+    t('Contact Exists'),
+    t('Email Mismatch'),
     t('Roles'),
     t('Cancel'),
     t('Manage'),
     t('[edit_node] [cancel_node]'),
+    t('Has Logged In'),
+    t('Has this account ever logged in?'),
+    t('Is Active'),
+    t('Is this account active or banned?'),
+    t('Does user have CiviCRM contact?'),
+    t('Email mismatch?'),
+    t('Do the Drupal and CiviCRM emails differ?'),
     t('Page'),
   );
   $export['users_inactive'] = $view;
