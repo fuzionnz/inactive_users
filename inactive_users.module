@@ -40,23 +40,25 @@ function inactive_users_user_cancel($edit, $account, $method) {
  */
 function _inactive_users_remove_contact($account) {
   civicrm_initialize();
-  $params = array(
-    'uf_id' => $account->uid,
-    'version' => 3,
-  );
   try {
-    $ufmatch = civicrm_api3('UFMatch','Get', $params);
-    $ufmatch = reset($ufmatch['values']);
     $params = array(
-      'id' => $ufmatch['contact_id'],
+      'uf_id' => $account->uid,
       'version' => 3,
-      // 'skip_undelete' => TRUE,
+      'contact_type' => 'Individual',
     );
-    $contact = civicrm_api('Contact', 'Get', $params);
-    $contact = reset($contact['values']);
-    $name = $contact['display_name'];
-    $delete = civicrm_api3('Contact', 'Delete', $params);
-    drupal_set_message(t('Contact %name has been deleted.', array('%name' => $name)));
+    $ufmatch = civicrm_api3('UFMatch','Get', $params);
+    if ($ufmatch = reset($ufmatch['values'])) {
+      $params = array(
+        'id' => $ufmatch['contact_id'],
+        'version' => 3,
+        // 'skip_undelete' => TRUE,
+      );
+      $contact = civicrm_api('Contact', 'Get', $params);
+      $contact = reset($contact['values']);
+      $name = $contact['display_name'];
+      $delete = civicrm_api3('Contact', 'Delete', $params);
+      drupal_set_message(t('Contact %name has been deleted.', array('%name' => $name)));
+    }
   }
   catch (Exception $e) {
     drupal_set_message(t('Unable to delete contact %name, error was: %message', array('%message' => $e->getMessage(), '%name' => $name)), 'error');
