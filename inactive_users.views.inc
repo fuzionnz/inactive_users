@@ -139,10 +139,10 @@ class inactive_users_handler_filter_email_match extends views_handler_filter_boo
     $this->ensure_my_table();
     $field = "$this->table_alias.$this->real_field";
     if ($this->value) {
-      $this->query->add_where_expression($this->options['group'], "$field COLLATE utf8_unicode_ci != users.mail COLLATE utf8_unicode_ci");
+      $this->query->add_where_expression($this->options['group'], '{users}.mail COLLATE utf8_unicode_ci IN (SELECT ' . $this->real_field . ' COLLATE utf8_unicode_ci FROM {' . $this->table_alias . '} WHERE contact_id = civicrm_uf_match.contact_id)');
     }
     else {
-      $this->query->add_where_expression($this->options['group'], "$field COLLATE utf8_unicode_ci = users.mail COLLATE utf8_unicode_ci");
+      $this->query->add_where_expression($this->options['group'], '{users}.mail COLLATE utf8_unicode_ci NOT IN (SELECT ' . $this->real_field . ' COLLATE utf8_unicode_ci FROM {' . $this->table_alias . '} WHERE contact_id = civicrm_uf_match.contact_id)');
     }
   }
 }
