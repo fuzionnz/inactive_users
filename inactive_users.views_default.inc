@@ -257,7 +257,7 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['fields']['email']['exclude'] = TRUE;
   $handler->display->display_options['fields']['email']['location_type'] = '0';
   $handler->display->display_options['fields']['email']['location_op'] = '0';
-  $handler->display->display_options['fields']['email']['is_primary'] = 0;
+  $handler->display->display_options['fields']['email']['is_primary'] = 1;
   /* Field: User: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
   $handler->display->display_options['fields']['name']['table'] = 'users';

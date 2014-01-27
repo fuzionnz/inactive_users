@@ -91,10 +91,10 @@ function inactive_users_views_data_alter(&$data) {
   );
 
   // Add filter to check for email mismatch.
-  $data['civicrm_email']['email_mismatch'] = array(
+  $data['civicrm_email']['email_match'] = array(
     'real field' => 'email',
-    'title' => t('Email Mismatch'),
-    'help' => t('Do the Drupal and CiviCRM emails differ?'),
+    'title' => t('Email Match'),
+    'help' => t('Do the Drupal and CiviCRM emails match?'),
     'field' => array(
       'handler' => 'views_handler_field_boolean',
       'click sortable' => TRUE,
@@ -103,7 +103,7 @@ function inactive_users_views_data_alter(&$data) {
       'handler' => 'views_handler_sort',
     ),
     'filter' => array(
-      'handler' => 'inactive_users_handler_filter_email_mismatch',
+      'handler' => 'inactive_users_handler_filter_email_match',
       'allow empty' => TRUE,
     ),
   );
@@ -111,6 +111,9 @@ function inactive_users_views_data_alter(&$data) {
   return $data;
 }
 
+/**
+ * Views filter for has associated contact.
+ */
 class inactive_users_handler_filter_has_contact extends views_handler_filter_boolean_operator {
   function query() {
     $this->ensure_my_table();
@@ -124,7 +127,14 @@ class inactive_users_handler_filter_has_contact extends views_handler_filter_boo
   }
 }
 
-class inactive_users_handler_filter_email_mismatch extends views_handler_filter_boolean_operator {
+/**
+ * Views filter for email mismatch.
+ *
+ * Subquery to identify any email associated with the contact.
+ *
+ * Could do this separately for "primary emails match"? That's much simpler.
+ */
+class inactive_users_handler_filter_email_match extends views_handler_filter_boolean_operator {
   function query() {
     $this->ensure_my_table();
     $field = "$this->table_alias.$this->real_field";
