@@ -138,12 +138,6 @@ function inactive_users_views_default_views() {
   $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['force_single'] = 0;
   $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['entity_load_capacity'] = '10';
   $handler->display->display_options['fields']['views_bulk_operations']['vbo_operations'] = array(
-    'rules_component::rules_assign_user_to_domain' => array(
-      'selected' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-    ),
     'action::user_block_user_action' => array(
       'selected' => 1,
       'postpone_processing' => 0,
@@ -160,70 +154,6 @@ function inactive_users_views_default_views() {
     ),
     'action::views_bulk_operations_delete_item' => array(
       'selected' => 1,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-    ),
-    'action::views_bulk_operations_delete_revision' => array(
-      'selected' => 0,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-    ),
-    'action::views_bulk_operations_script_action' => array(
-      'selected' => 0,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-    ),
-    'action::flag_user_action' => array(
-      'selected' => 0,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-    ),
-    'action::views_bulk_operations_modify_action' => array(
-      'selected' => 0,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-      'settings' => array(
-        'show_all_tokens' => 1,
-        'display_values' => array(
-          '_all_' => '_all_',
-        ),
-      ),
-    ),
-    'action::views_bulk_operations_user_roles_action' => array(
-      'selected' => 0,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-    ),
-    'action::views_bulk_operations_argument_selector_action' => array(
-      'selected' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-      'settings' => array(
-        'url' => '',
-      ),
-    ),
-    'action::system_send_email_action' => array(
-      'selected' => 0,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 0,
-      'override_label' => 0,
-      'label' => '',
-    ),
-    'action::pathauto_user_update_action' => array(
-      'selected' => 0,
       'postpone_processing' => 0,
       'skip_confirmation' => 0,
       'override_label' => 0,
@@ -307,12 +237,12 @@ Drupal: [name] &lt;[mail]&gt;<br>
   $handler->display->display_options['fields']['has_contact']['field'] = 'has_contact';
   $handler->display->display_options['fields']['has_contact']['type'] = 'unicode-yes-no';
   $handler->display->display_options['fields']['has_contact']['not'] = 0;
-  /* Field: CiviCRM Email: Email Mismatch */
-  $handler->display->display_options['fields']['email_mismatch']['id'] = 'email_mismatch';
-  $handler->display->display_options['fields']['email_mismatch']['table'] = 'civicrm_email';
-  $handler->display->display_options['fields']['email_mismatch']['field'] = 'email_mismatch';
-  $handler->display->display_options['fields']['email_mismatch']['type'] = 'unicode-yes-no';
-  $handler->display->display_options['fields']['email_mismatch']['not'] = 0;
+  /* Field: CiviCRM Email: Email Match */
+  $handler->display->display_options['fields']['email_match']['id'] = 'email_match';
+  $handler->display->display_options['fields']['email_match']['table'] = 'civicrm_email';
+  $handler->display->display_options['fields']['email_match']['field'] = 'email_match';
+  $handler->display->display_options['fields']['email_match']['type'] = 'true-false';
+  $handler->display->display_options['fields']['email_match']['not'] = 0;
   /* Field: User: Roles */
   $handler->display->display_options['fields']['rid']['id'] = 'rid';
   $handler->display->display_options['fields']['rid']['table'] = 'users_roles';
@@ -330,6 +260,11 @@ Drupal: [name] &lt;[mail]&gt;<br>
   $handler->display->display_options['fields']['edit_node']['label'] = 'Manage';
   $handler->display->display_options['fields']['edit_node']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['edit_node']['alter']['text'] = '[edit_node] [cancel_node]';
+  /* Field: CiviCRM Drupal match table: Domain ID */
+  $handler->display->display_options['fields']['domain_id']['id'] = 'domain_id';
+  $handler->display->display_options['fields']['domain_id']['table'] = 'civicrm_uf_match';
+  $handler->display->display_options['fields']['domain_id']['field'] = 'domain_id';
+  $handler->display->display_options['fields']['domain_id']['separator'] = '';
   /* Sort criterion: User: Created date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'users';
@@ -429,35 +364,49 @@ Drupal: [name] &lt;[mail]&gt;<br>
     14 => 0,
     16 => 0,
   );
-  /* Filter criterion: CiviCRM Email: Email Mismatch */
-  $handler->display->display_options['filters']['email_mismatch']['id'] = 'email_mismatch';
-  $handler->display->display_options['filters']['email_mismatch']['table'] = 'civicrm_email';
-  $handler->display->display_options['filters']['email_mismatch']['field'] = 'email_mismatch';
-  $handler->display->display_options['filters']['email_mismatch']['value'] = 'All';
-  $handler->display->display_options['filters']['email_mismatch']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['email_mismatch']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['email_mismatch']['expose']['label'] = 'Email mismatch?';
-  $handler->display->display_options['filters']['email_mismatch']['expose']['description'] = 'Do the Drupal and CiviCRM emails differ?';
-  $handler->display->display_options['filters']['email_mismatch']['expose']['operator'] = 'email_mismatch_op';
-  $handler->display->display_options['filters']['email_mismatch']['expose']['identifier'] = 'email_mismatch';
-  $handler->display->display_options['filters']['email_mismatch']['expose']['remember'] = TRUE;
-  $handler->display->display_options['filters']['email_mismatch']['expose']['remember_roles'] = array(
+  /* Filter criterion: CiviCRM Email: Email Match */
+  $handler->display->display_options['filters']['email_match']['id'] = 'email_match';
+  $handler->display->display_options['filters']['email_match']['table'] = 'civicrm_email';
+  $handler->display->display_options['filters']['email_match']['field'] = 'email_match';
+  $handler->display->display_options['filters']['email_match']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['email_match']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['email_match']['expose']['label'] = 'Email Match';
+  $handler->display->display_options['filters']['email_match']['expose']['operator'] = 'email_match_op';
+  $handler->display->display_options['filters']['email_match']['expose']['identifier'] = 'email_match';
+  $handler->display->display_options['filters']['email_match']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['email_match']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
     3 => 0,
-    8 => 0,
-    4 => 0,
-    5 => 0,
-    6 => 0,
-    7 => 0,
-    15 => 0,
-    9 => 0,
-    10 => 0,
-    11 => 0,
-    12 => 0,
-    13 => 0,
     14 => 0,
-    16 => 0,
+    11 => 0,
+    13 => 0,
+    15 => 0,
+    12 => 0,
+    8 => 0,
+    10 => 0,
+  );
+  /* Filter criterion: CiviCRM Drupal match table: Domain ID */
+  $handler->display->display_options['filters']['domain_id']['id'] = 'domain_id';
+  $handler->display->display_options['filters']['domain_id']['table'] = 'civicrm_uf_match';
+  $handler->display->display_options['filters']['domain_id']['field'] = 'domain_id';
+  $handler->display->display_options['filters']['domain_id']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['domain_id']['expose']['operator_id'] = 'domain_id_op';
+  $handler->display->display_options['filters']['domain_id']['expose']['label'] = 'Domain ID';
+  $handler->display->display_options['filters']['domain_id']['expose']['description'] = 'If using multisite: The domain id for the relevant domain';
+  $handler->display->display_options['filters']['domain_id']['expose']['operator'] = 'domain_id_op';
+  $handler->display->display_options['filters']['domain_id']['expose']['identifier'] = 'domain_id';
+  $handler->display->display_options['filters']['domain_id']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    14 => 0,
+    11 => 0,
+    13 => 0,
+    15 => 0,
+    12 => 0,
+    8 => 0,
+    10 => 0,
   );
 
   /* Display: Page */
@@ -505,18 +454,18 @@ Drupal: [name] &lt;[mail]&gt;<br>
     t('Logged In'),
     t('Active'),
     t('Contact Exists'),
-    t('Email Mismatch'),
+    t('Email Match'),
     t('Roles'),
     t('Cancel'),
     t('Manage'),
     t('[edit_node] [cancel_node]'),
+    t('Domain ID'),
     t('Has Logged In'),
     t('Has this account ever logged in?'),
     t('Is Active'),
     t('Is this account active or banned?'),
     t('Does user have CiviCRM contact?'),
-    t('Email mismatch?'),
-    t('Do the Drupal and CiviCRM emails differ?'),
+    t('If using multisite: The domain id for the relevant domain'),
     t('Page'),
   );
   $export['users_inactive'] = $view;
