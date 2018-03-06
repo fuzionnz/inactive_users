@@ -13,7 +13,7 @@ No configuration required - just install it.
 
 ## How it works
 
-This extension creates a view which you can use to identify and delete drupal users and their associated civicrm records. Page is accessible via: admin/people/inactive
+This extension creates a view which you can use to identify and delete drupal users and puts their associated civicrm records in the trash. Page is accessible via: admin/people/inactive
 
 Initially a view and a couple of hooks to remove associated contacts.
 
