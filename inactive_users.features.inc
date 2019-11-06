@@ -8,5 +8,7 @@
  * Implements hook_views_api().
  */
 function inactive_users_views_api() {
-  return array("version" => "3.0");
+  return [
+    "version" => "3.0",
+  ];
 }

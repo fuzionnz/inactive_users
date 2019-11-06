@@ -13,3 +13,4 @@ features[features_api][] = api:1
 features[views_view][] = users_inactive
 features_exclude[dependencies][ctools] = ctools
 mtime = 1408068078
+files[] = inactive_users_handler_filter_match_contact_names.inc

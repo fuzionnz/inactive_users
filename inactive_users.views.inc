@@ -108,6 +108,17 @@ function inactive_users_views_data_alter(&$data) {
     ),
   );
 
+  if (isset($data['civicrm_contact']) && !isset($data['civicrm_contact']['match_contact_names'])) {
+    $data['civicrm_contact']['match_contact_names'] = array(
+      'real field' => 'match_contact_names',
+      'title' => t('Matching First & Last Name'),
+      'help' => t('Return contacts having first_name = last_name.'),
+      'filter' => array(
+        'handler' => 'inactive_users_handler_filter_match_contact_names',
+      ),
+    );
+  }
+
   return $data;
 }
 
