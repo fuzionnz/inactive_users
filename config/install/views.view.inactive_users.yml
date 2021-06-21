@@ -126,11 +126,11 @@ display:
             1:
               action_id: user_block_user_action
               preconfiguration:
-                add_confirmation: 0
+                add_confirmation: false
             4:
               action_id: vbo_cancel_user_action
               preconfiguration:
-                add_confirmation: 0
+                add_confirmation: false
             5:
               action_id: views_bulk_operations_delete_entity
           force_selection_info: false
@@ -1135,7 +1135,7 @@ display:
             widget: select
             multiple: false
             remember: true
-            default_group: '1'
+            default_group: All
             default_group_multiple: {  }
             group_items:
               1:
@@ -1197,7 +1197,7 @@ display:
             widget: select
             multiple: false
             remember: true
-            default_group: '1'
+            default_group: All
             default_group_multiple: {  }
             group_items:
               1:
