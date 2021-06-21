@@ -1,10 +1,4 @@
 <?php
-/**
- * @file
- * Code for the Inactive Users feature.
- */
-
-include_once 'inactive_users.features.inc';
 
 /**
  * Implements hook_user_delete().
@@ -39,28 +33,29 @@ function inactive_users_user_cancel($edit, $account, $method) {
  * exceptions?
  */
 function _inactive_users_remove_contact($account) {
-  civicrm_initialize();
+  \Drupal::service('civicrm')->initialize();
   try {
-    $params = array(
-      'uf_id' => $account->uid,
-      'version' => 3,
-      'contact_type' => 'Individual',
-    );
-    $ufmatch = civicrm_api3('UFMatch','Get', $params);
-    if ($ufmatch = reset($ufmatch['values'])) {
-      $params = array(
-        'id' => $ufmatch['contact_id'],
-        'version' => 3,
-        // 'skip_undelete' => TRUE,
-      );
-      $contact = civicrm_api('Contact', 'Get', $params);
-      $contact = reset($contact['values']);
-      $name = $contact['display_name'];
-      $delete = civicrm_api3('Contact', 'Delete', $params);
-      drupal_set_message(t('Contact %name has been deleted.', array('%name' => $name)));
+    $civiContact = \Civi\Api4\UFMatch::get()
+      ->addSelect('contact.display_name', 'contact_id')
+      ->setJoin([
+        ['Contact AS contact', FALSE, NULL],
+      ])
+      ->addWhere('contact.contact_type', '=', 'Individual')
+      ->addWhere('uf_id', '=', $account->id())
+      ->execute()
+      ->first();
+
+    if (!empty($civiContact['contact_id'])) {
+      $delete = \Civi\Api4\Contact::delete()
+        ->addWhere('id', '=', $civiContact['contact_id'])
+        ->execute()
+        ->count();
+      if (!empty($delete)) {
+        \Drupal::messenger()->addStatus(t('Contact %name has been deleted.', ['%name' => $civiContact['contact_id.display_name']]));
+      }
     }
   }
   catch (Exception $e) {
-    drupal_set_message(t('Unable to delete contact %name, error was: %message', array('%message' => $e->getMessage(), '%name' => $name)), 'error');
+    \Drupal::messenger()->addError(t('Unable to delete contact %name, error was: %message.', ['%message' => $e->getMessage(), '%name' => $civiContact['contact_id.display_name']]));
   }
 }

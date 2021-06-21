@@ -1,0 +1,9 @@
+name: 'Inactive Users'
+type: module
+description: 'Provide a view of inactive users'
+core_version_requirement: ^8.8 || ^9
+package: 'Administration'
+dependencies:
+  - drupal:views
+  - drupal:views_bulk_operations
+  - civicrm
