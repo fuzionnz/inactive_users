@@ -51,11 +51,11 @@ function _inactive_users_remove_contact($account) {
         ->execute()
         ->count();
       if (!empty($delete)) {
-        \Drupal::messenger()->addStatus(t('Contact %name has been deleted.', ['%name' => $civiContact['contact_id.display_name']]));
+        \Drupal::messenger()->addStatus(t('Contact %name has been deleted.', ['%name' => $civiContact['contact.display_name']]));
       }
     }
   }
   catch (Exception $e) {
-    \Drupal::messenger()->addError(t('Unable to delete contact %name, error was: %message.', ['%message' => $e->getMessage(), '%name' => $civiContact['contact_id.display_name']]));
+    \Drupal::messenger()->addError(t('Unable to delete contact %name, error was: %message.', ['%message' => $e->getMessage(), '%name' => $civiContact['contact.display_name']]));
   }
 }
