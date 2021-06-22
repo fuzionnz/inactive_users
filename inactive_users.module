@@ -46,11 +46,10 @@ function _inactive_users_remove_contact($account) {
       ->first();
 
     if (!empty($civiContact['contact_id'])) {
-      $delete = \Civi\Api4\Contact::delete()
-        ->addWhere('id', '=', $civiContact['contact_id'])
-        ->execute()
-        ->count();
-      if (!empty($delete)) {
+      $delete = civicrm_api3('Contact', 'delete', [
+        'id' => $civiContact['contact_id'],
+      ]);
+      if (!empty($delete['count'])) {
         \Drupal::messenger()->addStatus(t('Contact %name has been deleted.', ['%name' => $civiContact['contact.display_name']]));
       }
     }
