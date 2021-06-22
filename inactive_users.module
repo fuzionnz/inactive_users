@@ -1,9 +1,12 @@
 <?php
 
 /**
- * Implements hook_user_delete().
+ * Implements hook_user_predelete().
+ *
+ * as hook_user_delete() is also used by core and it
+ * already deletes the uf match record since it is executed first.
  */
-function inactive_users_user_delete($account) {
+function inactive_users_user_predelete($account) {
   _inactive_users_remove_contact($account);
 }
 
