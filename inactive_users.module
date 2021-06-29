@@ -38,26 +38,37 @@ function inactive_users_user_cancel($edit, $account, $method) {
 function _inactive_users_remove_contact($account) {
   \Drupal::service('civicrm')->initialize();
   try {
-    $civiContact = \Civi\Api4\UFMatch::get()
-      ->addSelect('contact.display_name', 'contact_id')
-      ->setJoin([
-        ['Contact AS contact', FALSE, NULL],
-      ])
-      ->addWhere('contact.contact_type', '=', 'Individual')
-      ->addWhere('uf_id', '=', $account->id())
-      ->execute()
-      ->first();
+    if (empty($account->id())) {
+      return;
+    }
+    $ufMatch = civicrm_api3('UFMatch', 'get', [
+      'sequential' => 1,
+      'uf_id' => $account->id(),
+    ])['values'][0] ?? NULL;
 
-    if (!empty($civiContact['contact_id'])) {
-      $delete = civicrm_api3('Contact', 'delete', [
-        'id' => $civiContact['contact_id'],
-      ]);
-      if (!empty($delete['count'])) {
-        \Drupal::messenger()->addStatus(t('Contact %name has been deleted.', ['%name' => $civiContact['contact.display_name']]));
-      }
+    if (empty($ufMatch['contact_id'])) {
+      return;
+    }
+
+    $civiContact = civicrm_api3('Contact', 'get', [
+      'sequential' => 1,
+      'id' => $ufMatch['contact_id'],
+    ])['values'][0] ?? NULL;
+
+    if (empty($civiContact['id'])) {
+      return;
+    }
+
+    $delete = civicrm_api3('Contact', 'delete', [
+      'id' => $civiContact['id'],
+    ]);
+    if (!empty($delete['count'])) {
+      \Drupal::messenger()->addStatus(t('Contact %name has been deleted.', ['%name' => $civiContact['contact.display_name']]));
     }
   }
   catch (Exception $e) {
-    \Drupal::messenger()->addError(t('Unable to delete contact %name, error was: %message.', ['%message' => $e->getMessage(), '%name' => $civiContact['contact.display_name']]));
+    if (!empty($civiContact['display_name'])) {
+      \Drupal::messenger()->addError(t('Unable to delete contact %name, error was: %message.', ['%message' => $e->getMessage(), '%name' => $civiContact['display_name']]));
+    }
   }
 }
